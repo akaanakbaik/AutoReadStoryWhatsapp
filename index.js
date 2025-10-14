@@ -5,6 +5,7 @@ const {
   Browsers,
   jidNormalizedUser,
   downloadMediaMessage,
+  fetchLatestBaileysVersion,
 } = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const readline = require("readline");
@@ -55,8 +56,10 @@ async function connectToWhatsApp() {
     fs.existsSync(sessionPath) && fs.readdirSync(sessionPath).length > 0;
 
   const { state, saveCreds } = await useMultiFileAuthState("sessions");
+  const { version, isLatest } = await fetchLatestBaileysVersion();
 
   const sock = makeWASocket({
+    version,
     logger: pino({ level: "silent" }),
     auth: state,
     printQRInTerminal: !useCode,
@@ -1005,7 +1008,7 @@ Mengambil/download foto, video, audio dari pesan sementara/sekali liat dari yang
         const groupName = groupMetadata.subject;
         const botNumber = sock.user.id.split(":")[0] + "@s.whatsapp.net";
         const isAdmin = groupMetadata.participants.some(
-          (member) => member.id === botNumber && member.admin !== null
+          (member) => member.phoneNumber === botNumber && member.admin !== null
         );
 
         if (isAdmin) {

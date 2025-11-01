@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs22.x",
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.js"
+    }
+  ],
+  "env": {
+    "TZ": "Asia/Jakarta"
+  },
+  "installCommand": "npm install",
+  "buildCommand": "echo 'skip build'",
+  "outputDirectory": "."
+}

@@ -77,6 +77,22 @@ async function connectToWhatsApp() {
       output: process.stdout,
     });
 
+    // 🔒 Anti Fake Online Mode
+// Mencegah Baileys mengirim sinyal online/typing/recording
+sock.sendPresenceUpdate = async () => {};
+sock.query = async (node) => {
+  if (node?.attrs?.type === 'available' || node?.attrs?.type === 'unavailable') {
+    return; // blok presence node
+  }
+  return await sock.ws.sendNode(node);
+};
+
+// Opsional: matikan auto presence broadcast dari sistem internal
+if (sock?.presenceSubscribe) sock.presenceSubscribe = async () => {};
+
+// Debug: verifikasi mode aman aktif
+console.log("[ANTI-FAKE-ONLINE] Mode aktif: akun tidak akan terlihat online di kontak lain".cyan);
+
     logCuy(
       "Halo sepertinya kamu belum login, Mau login wangsaf pakai pairing code?\nSilahkan balas dengan (y/n)\nketik y untuk setuju atau ketik n untuk login menggunakan qrcode",
       "cyan"
